@@ -4,7 +4,7 @@
 
 // Query untuk mendapatkan semua data
 $query = "
-    SELECT id, Nama_toko, Alamat, Pemilik, No_telpon, Jenis_Layanan, Harga_Galon, Jumlah_Barang, Tanggal 
+    SELECT id, Nama_toko, Alamat, Pemilik, No_Telpon, Jenis_Layanan, Harga_Galon, Jumlah_Barang, Tanggal 
     FROM tbl_pelangan
 ";
 
@@ -18,33 +18,13 @@ $results = mysqli_query($koneksi, $query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Data</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f4f4f4;
-            text-align: left;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Dashboard Data</h1>
+        <a href="logout.php" class="btn btn-primary">Logout</a>
+        <a href="tambah.php" class="btn btn-primary">Tambah Data</a>
+    <br><br>
     <table>
         <thead>
             <tr>
@@ -57,6 +37,7 @@ $results = mysqli_query($koneksi, $query);
                 <th>Harga Galon</th>
                 <th>Jumlah Barang</th>
                 <th>Tanggal</th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -67,11 +48,16 @@ $results = mysqli_query($koneksi, $query);
                     <td><?= htmlspecialchars($row['Nama_toko']) ?></td>
                     <td><?= htmlspecialchars($row['Alamat']) ?></td>
                     <td><?= htmlspecialchars($row['Pemilik']) ?></td>
-                    <td><?= htmlspecialchars($row['No_telpon']) ?></td>
+                    <td><?= htmlspecialchars($row['No_Telpon']) ?></td>
                     <td><?= htmlspecialchars($row['Jenis_Layanan']) ?></td>
                     <td><?= htmlspecialchars($row['Harga_Galon']) ?></td>
                     <td><?= htmlspecialchars($row['Jumlah_Barang']) ?></td>
                     <td><?= htmlspecialchars($row['Tanggal']) ?></td>
+                    <td>
+                        <a href="edit.php?op=edit&id=<?= htmlspecialchars($row['id']) ?>" class="btn btn-danger btn-sm">Edit</a>
+                        <a href="hapus.php?id=<?= htmlspecialchars($row['id']) ?>" onclick="return confirm('Yakin mau menghapus data?')" class="btn btn-danger btn-sm">Hapus</a>
+                    </td>
+
                 </tr>
                 <?php endforeach; ?>
             <?php else: ?>

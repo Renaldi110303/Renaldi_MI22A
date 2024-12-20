@@ -2,23 +2,6 @@
 session_start();
 require 'db.php';
 
-$error = '';
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'];
-    $password = md5($_POST['password']); // MD5 untuk hashing sederhana
-
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username AND password = :password");
-    $stmt->execute(['username' => $username, 'password' => $password]);
-    $user = $stmt->fetch();
-
-    if ($user) {
-        $_SESSION['user'] = $user['username'];
-        header("Location: dashboard.php");
-        exit();
-    } else {
-        $error = "Invalid username or password";
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,13 +14,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
 <div class="login-container">
     <h2>Login</h2>
-    <?php if ($error): ?>
-        <p class="error"><?= $error ?></p>
-    <?php endif; ?>
     <form method="POST">
         <input type="text" name="username" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
+        <button type="submit" name="login">Login</button>
+        <p>want to create an account? <a href="register.php">Register here</a></p>
+        <p>
+            <?php
+            if (isset($_SESSION['error'])) {
+                echo "<span style='color:red'>" . $_SESSION['error'] . "</span>";
+                unset($_SESSION['error']);
+            }
+            ?>
+        </p>
+
+        <?php 
+        if(isset($_POST["login"])){
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+
+            $sql = "SELECT username, password FROM users WHERE username = '$username' AND password = sha1('$password');";
+            $result = mysqli_query($koneksi, $sql);
+
+            $user = mysqli_fetch_assoc($result);
+            if ($user) {
+                $_SESSION['users'] = $username;
+                header('location: dashboard.php');
+                exit();
+            } else {
+                $_SESSION['error'] = "Username / Password tidak sesuai";
+                header('location: login.php');
+                exit();
+            }
+        }
+        ?>
     </form>
 </div>
 </body>
